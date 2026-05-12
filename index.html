@@ -1,202 +1,174 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-<meta charset="UTF-8" />
+<meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Luxury Vinyl Player</title>
+<title>YouTube Music Style Player</title>
 
 <style>
 body{
     margin:0;
     height:100vh;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    background: radial-gradient(circle at top,#111,#000);
+    background:#000;
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
     color:#fff;
+    overflow:hidden;
 }
 
-/* 主體 */
-.player{
-    width:380px;
-    max-width:92vw;
-    padding:24px;
-    border-radius:28px;
-    background: linear-gradient(145deg,#151515,#000);
-    box-shadow:
-        0 30px 80px rgba(0,0,0,0.7),
-        inset 0 1px 0 rgba(255,255,255,0.05);
+/* 背景模糊層 */
+.bg{
+    position:absolute;
+    inset:0;
+    background:url("cover.jpg") center/cover no-repeat;
+    filter:blur(30px) brightness(0.4);
+    transform:scale(1.2);
+}
+
+/* 主容器 */
+.app{
+    position:relative;
+    height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+}
+
+/* ===== 上半 ===== */
+.top{
+    padding:60px 24px 10px;
     text-align:center;
 }
 
-/* ===== 黑膠區 ===== */
-.vinyl-area{
-    position:relative;
-    width:280px;
-    height:280px;
-    margin:0 auto 20px;
+.cover{
+    width:72vw;
+    max-width:320px;
+    aspect-ratio:1/1;
+    margin:0 auto;
+    border-radius:18px;
+    background:url("cover.jpg") center/cover no-repeat;
+    box-shadow:0 25px 60px rgba(0,0,0,0.6);
+    transition:0.3s;
 }
 
-/* 黑膠 */
-.vinyl{
-    width:100%;
-    height:100%;
-    border-radius:50%;
-    position:relative;
-
-    /* 關鍵：封面直接鋪滿整張黑膠 */
-    background:
-        radial-gradient(circle at center,
-            rgba(0,0,0,0.2) 0%,
-            rgba(0,0,0,0.7) 70%,
-            #000 100%),
-        url("cover.jpg") center/cover no-repeat;
-
-    box-shadow:
-        inset 0 0 30px rgba(0,0,0,0.8),
-        0 20px 50px rgba(0,0,0,0.8);
-
-    animation: spin 6s linear infinite;
-    animation-play-state: paused;
+.playing .cover{
+    transform:scale(1.03);
 }
 
-/* 旋轉 */
-@keyframes spin{
-    from{transform:rotate(0deg);}
-    to{transform:rotate(360deg);}
-}
-
-/* 黑膠刻紋 */
-.vinyl::before{
-    content:"";
-    position:absolute;
-    inset:0;
-    border-radius:50%;
-    background: repeating-radial-gradient(
-        circle,
-        rgba(255,255,255,0.05) 0px,
-        transparent 2px,
-        transparent 6px
-    );
-    opacity:0.6;
-}
-
-/* 中心反光點 */
-.vinyl::after{
-    content:"";
-    position:absolute;
-    inset:50% auto auto 50%;
-    transform:translate(-50%,-50%);
-    width:18px;
-    height:18px;
-    border-radius:50%;
-    background: radial-gradient(circle,#aaa,#333);
-    box-shadow:0 0 10px rgba(255,255,255,0.2);
-}
-
-/* 唱臂 */
-.arm{
-    position:absolute;
-    right:-55px;
-    top:25px;
-    width:160px;
-    height:6px;
-    background:linear-gradient(#d0d0d0,#777);
-    border-radius:4px;
-    transform-origin:left;
-    transform:rotate(-25deg);
-    transition:0.4s;
-    box-shadow:0 3px 10px rgba(0,0,0,0.5);
-}
-
-/* 播放狀態 */
-.playing .vinyl{
-    animation-play-state:running;
-}
-.playing .arm{
-    transform:rotate(0deg);
-}
-
-/* ===== 文字 ===== */
+/* 標題 */
 .title{
-    font-size:20px;
-    margin-top:10px;
-    letter-spacing:0.5px;
+    margin-top:18px;
+    font-size:22px;
+    font-weight:600;
 }
 
-.subtitle{
-    font-size:12px;
-    opacity:0.5;
-    margin-bottom:10px;
+.artist{
+    font-size:13px;
+    opacity:0.6;
+    margin-top:4px;
 }
 
-/* ===== 進度條（極簡高級） ===== */
+/* ===== 進度條 ===== */
+.progress{
+    padding:0 24px;
+}
+
 input[type=range]{
     width:100%;
-    accent-color:#caa76a;
-    margin:12px 0 18px;
+    accent-color:#ff4d2d;
 }
 
-/* ===== 控制鍵 ===== */
+/* ===== 控制列（YouTube Music風） ===== */
 .controls{
     display:flex;
-    justify-content:center;
+    justify-content:space-between;
     align-items:center;
-    gap:22px;
+    padding:18px 30px 40px;
 }
 
 button{
-    border:none;
     background:none;
+    border:none;
     color:#fff;
-    font-size:18px;
-    cursor:pointer;
+    font-size:20px;
     opacity:0.85;
+    cursor:pointer;
 }
 
 button:hover{
     opacity:1;
 }
 
+/* 中間播放鍵 */
 .play{
-    width:64px;
-    height:64px;
+    width:68px;
+    height:68px;
     border-radius:50%;
-    background:linear-gradient(145deg,#d4af37,#b08d2f);
+    background:linear-gradient(145deg,#ff4d2d,#ff2a00);
     color:#000;
-    font-size:22px;
-    box-shadow:0 10px 30px rgba(0,0,0,0.5);
+    font-size:24px;
+    box-shadow:0 20px 40px rgba(0,0,0,0.6);
+}
+
+/* bottom bar（類YouTube Music） */
+.bottom{
+    display:flex;
+    justify-content:space-around;
+    padding:10px 0 18px;
+    border-top:1px solid rgba(255,255,255,0.08);
+    backdrop-filter:blur(10px);
+}
+
+.tab{
+    font-size:12px;
+    opacity:0.6;
+}
+
+.tab.active{
+    opacity:1;
+    color:#ff4d2d;
 }
 </style>
 </head>
 
 <body>
 
-<div class="player" id="player">
+<div class="bg"></div>
 
-    <div class="vinyl-area">
-        <div class="vinyl"></div>
-        <div class="arm"></div>
+<div class="app" id="app">
+
+    <!-- 上 -->
+    <div class="top">
+        <div class="cover"></div>
+        <div class="title">Milk Tea</div>
+        <div class="artist">特製奶茶 · Ynotpiano</div>
     </div>
 
-    <div class="title">Milk Tea</div>
-    <div class="subtitle">特製奶茶 - Ynotpiano</div>
+    <!-- 進度 -->
+    <div class="progress">
+        <input type="range" id="progress" min="0" max="100" value="0"/>
+    </div>
 
-    <input type="range" id="progress" min="0" max="100" value="0"/>
-
+    <!-- 控制 -->
     <div class="controls">
         <button onclick="back()">⏮</button>
         <button class="play" id="btn" onclick="toggle()">▶</button>
         <button onclick="next()">⏭</button>
     </div>
 
-    <audio id="audio" src="music.mp3" preload="metadata"></audio>
+    <!-- bottom nav -->
+    <div class="bottom">
+        <div class="tab active">Now</div>
+        <div class="tab">Explore</div>
+        <div class="tab">Library</div>
+    </div>
+
 </div>
+
+<audio id="audio" src="music.mp3" preload="metadata"></audio>
 
 <script>
 const audio = document.getElementById("audio");
-const player = document.getElementById("player");
+const app = document.getElementById("app");
 const btn = document.getElementById("btn");
 const progress = document.getElementById("progress");
 
@@ -204,11 +176,11 @@ const progress = document.getElementById("progress");
 function toggle(){
     if(audio.paused){
         audio.play();
-        player.classList.add("playing");
+        app.classList.add("playing");
         btn.textContent="⏸";
     }else{
         audio.pause();
-        player.classList.remove("playing");
+        app.classList.remove("playing");
         btn.textContent="▶";
     }
 }
@@ -224,7 +196,7 @@ progress.addEventListener("input",()=>{
     audio.currentTime = (progress.value/100)*audio.duration;
 });
 
-/* 控制 */
+/* skip */
 function back(){
     audio.currentTime = Math.max(0,audio.currentTime-10);
 }
