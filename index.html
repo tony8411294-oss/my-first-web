@@ -16,7 +16,7 @@
 }
 
 body{
-    background:linear-gradient(180deg,#111,#000);
+    background:#0d0d0d;
     color:white;
     min-height:100vh;
 
@@ -31,34 +31,99 @@ body{
     padding:25px;
 }
 
-.cover{
-    width:100%;
-    aspect-ratio:1;
+.album{
+    position:relative;
+    width:300px;
+    height:300px;
+    margin:auto;
+}
 
-    border-radius:30px;
+/* 黑膠 */
+
+.vinyl{
+
+    position:absolute;
+
+    width:280px;
+    height:280px;
+
+    right:-80px;
+    top:10px;
+
+    border-radius:50%;
 
     background:
-    url("cover.jpg") center/cover;
+    radial-gradient(circle,#111 8%,#444 9%,#111 10%),
+    repeating-radial-gradient(
+        circle,
+        #111 0px,
+        #111 4px,
+        #222 5px,
+        #111 6px
+    );
 
-    box-shadow:0 20px 50px rgba(0,0,0,.6);
+    box-shadow:0 0 30px rgba(0,0,0,.8);
 
-    animation:spin 10s linear infinite;
+    z-index:1;
 
+    animation:spin 4s linear infinite;
     animation-play-state:paused;
 }
 
-.cover.playing{
+.vinyl.playing{
     animation-play-state:running;
 }
 
-@keyframes spin{
-    from{transform:rotate(0deg);}
-    to{transform:rotate(360deg);}
+
+/* 封面 */
+
+.cover{
+
+    position:absolute;
+
+    width:100%;
+    height:100%;
+
+    z-index:2;
+
+    border-radius:25px;
+
+    background:
+    url("cover.jpg")
+    center/cover;
+
+    box-shadow:0 20px 40px rgba(0,0,0,.5);
 }
 
+.cover.playing{
+    animation:float 2s ease-in-out infinite;
+}
+
+
+
+@keyframes spin{
+    from{
+        transform:rotate(0deg);
+    }
+    to{
+        transform:rotate(360deg);
+    }
+}
+
+
+@keyframes float{
+    0%,100%{
+        transform:translateY(0px);
+    }
+    50%{
+        transform:translateY(-6px);
+    }
+}
+
+
 .info{
+    margin-top:40px;
     text-align:center;
-    margin-top:30px;
 }
 
 .title{
@@ -71,6 +136,7 @@ body{
     opacity:.7;
 }
 
+
 .progress{
     width:100%;
     margin-top:25px;
@@ -80,55 +146,50 @@ body{
     width:100%;
 }
 
-.time{
-    display:flex;
-    justify-content:space-between;
-    opacity:.6;
-    margin-top:8px;
-    font-size:.9rem;
-}
 
 .controls{
-    margin-top:35px;
-
-    display:flex;
-    justify-content:center;
+    margin-top:30px;
+    text-align:center;
 }
+
 
 .playBtn{
 
-    width:90px;
-    height:90px;
+    width:85px;
+    height:85px;
 
     border:none;
     border-radius:50%;
 
     font-size:2rem;
 
-    background:white;
     cursor:pointer;
 }
 
-.links{
-
-    margin-top:35px;
-    text-align:center;
-}
-
-.links a{
-    color:#aaa;
-    text-decoration:none;
-    margin:0 10px;
-}
 
 </style>
 </head>
 <body>
 
 
+
 <div class="player">
 
-    <div class="cover" id="cover"></div>
+    <div class="album">
+
+        <div
+        class="vinyl"
+        id="vinyl">
+        </div>
+
+        <div
+        class="cover"
+        id="cover">
+        </div>
+
+    </div>
+
+
 
     <div class="info">
 
@@ -143,24 +204,13 @@ body{
     </div>
 
 
+
     <div class="progress">
 
         <input
         type="range"
-        value="0"
-        id="slider">
-
-        <div class="time">
-
-            <span id="current">
-                0:00
-            </span>
-
-            <span id="duration">
-                0:00
-            </span>
-
-        </div>
+        id="slider"
+        value="0">
 
     </div>
 
@@ -171,7 +221,7 @@ body{
         <button
         class="playBtn"
         onclick="togglePlay()"
-        id="playBtn">
+        id="btn">
 
             ▶
 
@@ -179,19 +229,6 @@ body{
 
     </div>
 
-
-
-    <div class="links">
-
-        <a href="#">
-            Instagram
-        </a>
-
-        <a href="#">
-            YouTube
-        </a>
-
-    </div>
 
 
 </div>
@@ -208,14 +245,17 @@ src="music.mp3">
 <script>
 
 const audio=document.getElementById("audio")
-const slider=document.getElementById("slider")
-const playBtn=document.getElementById("playBtn")
+
+const vinyl=document.getElementById("vinyl")
+
 const cover=document.getElementById("cover")
 
-const current=document.getElementById("current")
-const duration=document.getElementById("duration")
+const btn=document.getElementById("btn")
+
+const slider=document.getElementById("slider")
 
 let playing=false
+
 
 
 function togglePlay(){
@@ -224,7 +264,9 @@ function togglePlay(){
 
         audio.pause()
 
-        playBtn.innerHTML="▶"
+        btn.innerHTML="▶"
+
+        vinyl.classList.remove("playing")
 
         cover.classList.remove("playing")
 
@@ -232,7 +274,9 @@ function togglePlay(){
 
         audio.play()
 
-        playBtn.innerHTML="❚❚"
+        btn.innerHTML="❚❚"
+
+        vinyl.classList.add("playing")
 
         cover.classList.add("playing")
     }
@@ -241,46 +285,35 @@ function togglePlay(){
 }
 
 
-audio.addEventListener("loadedmetadata",()=>{
 
-    slider.max=audio.duration
+audio.addEventListener(
+"loadedmetadata",
+()=>{
 
-    duration.innerHTML=formatTime(
-        audio.duration
-    )
-
-})
-
-
-audio.addEventListener("timeupdate",()=>{
-
-    slider.value=audio.currentTime
-
-    current.innerHTML=formatTime(
-        audio.currentTime
-    )
+    slider.max=
+    audio.duration
 
 })
 
 
-slider.addEventListener("input",()=>{
+audio.addEventListener(
+"timeupdate",
+()=>{
 
-    audio.currentTime=slider.value
+    slider.value=
+    audio.currentTime
 
 })
 
 
-function formatTime(sec){
+slider.addEventListener(
+"input",
+()=>{
 
-    let m=Math.floor(sec/60)
+    audio.currentTime=
+    slider.value
 
-    let s=Math.floor(sec%60)
-
-    if(s<10)s="0"+s
-
-    return m+":"+s
-
-}
+})
 
 </script>
 
