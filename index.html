@@ -1,257 +1,299 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-<meta charset="UTF-8" />
+<meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Luxury Vinyl Player</title>
+<title>Music App</title>
 
 <style>
 body{
     margin:0;
     height:100vh;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    background: radial-gradient(circle at top,#1a1a1a,#000);
+    background:#000;
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
     color:#fff;
+    display:flex;
+    justify-content:center;
 }
 
-/* 主體 */
+/* ===== APP 主體（直式手機感） ===== */
 .player{
-    width:380px;
-    max-width:92vw;
-    padding:26px;
-    border-radius:30px;
-    background: linear-gradient(145deg,#161616,#050505);
-    box-shadow:
-        0 40px 100px rgba(0,0,0,0.75),
-        inset 0 1px 0 rgba(255,255,255,0.05);
-    text-align:center;
+    width:100%;
+    max-width:420px;
+    height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    padding:30px 20px;
+    box-sizing:border-box;
 }
 
 /* ===== 黑膠區 ===== */
 .vinyl-area{
-    position:relative;
-    width:290px;
-    height:290px;
-    margin:0 auto 18px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    margin-top:20px;
 }
 
-/* 黑膠 */
 .vinyl{
-    width:100%;
-    height:100%;
+    width:260px;
+    height:260px;
     border-radius:50%;
-    position:relative;
 
-    /* 封面鋪滿黑膠 */
     background:
         radial-gradient(circle at center,
-            rgba(0,0,0,0.15) 0%,
-            rgba(0,0,0,0.55) 60%,
-            rgba(0,0,0,0.95) 100%),
+            rgba(0,0,0,0.2),
+            rgba(0,0,0,0.7)),
         url("cover.jpg") center/cover no-repeat;
 
-    box-shadow:
-        0 25px 60px rgba(0,0,0,0.8),
-        inset 0 0 35px rgba(0,0,0,0.85);
-
-    /* 🔥 轉速已調慢（重點） */
-    animation: spin 18s linear infinite;
-    animation-play-state: paused;
-
-    overflow:hidden;
+    box-shadow:0 30px 70px rgba(0,0,0,0.8);
 }
 
-/* 旋轉動畫 */
-@keyframes spin{
-    from{transform:rotate(0deg);}
-    to{transform:rotate(360deg);}
-}
-
-/* 黑膠細紋 */
 .vinyl::before{
     content:"";
     position:absolute;
-    inset:0;
+    width:260px;
+    height:260px;
     border-radius:50%;
     background: repeating-radial-gradient(
         circle,
         rgba(255,255,255,0.04) 0px,
         transparent 1px,
-        transparent 5px
+        transparent 6px
     );
-    opacity:0.35;
+    opacity:0.25;
 }
 
-/* 光澤 */
-.vinyl::after{
-    content:"";
-    position:absolute;
-    inset:-40%;
-    background: radial-gradient(circle at 30% 30%,
-        rgba(255,255,255,0.25),
-        transparent 55%);
-    transform: rotate(25deg);
-    pointer-events:none;
-}
-
-/* 中心孔 */
+/* 中心點 */
 .hole{
     position:absolute;
-    left:50%;
-    top:50%;
-    width:22px;
-    height:22px;
-    transform:translate(-50%,-50%);
+    width:20px;
+    height:20px;
     border-radius:50%;
-    background: radial-gradient(circle,#111,#000);
-    box-shadow: inset 0 0 6px rgba(255,255,255,0.1);
-}
-
-/* 唱臂 */
-.arm{
-    position:absolute;
-    right:-60px;
-    top:30px;
-    width:170px;
-    height:6px;
-    background: linear-gradient(90deg,#d8d8d8,#888);
-    border-radius:4px;
-    transform-origin:left;
-    transform:rotate(-28deg);
-    transition:0.5s;
-    box-shadow:0 6px 14px rgba(0,0,0,0.5);
-}
-
-/* 播放狀態 */
-.playing .vinyl{
-    animation-play-state:running;
-}
-
-.playing .arm{
-    transform:rotate(0deg);
+    background:#111;
 }
 
 /* ===== 文字 ===== */
+.info{
+    text-align:center;
+    margin-top:10px;
+}
+
 .title{
     font-size:20px;
-    margin-top:8px;
-    letter-spacing:0.6px;
+    font-weight:600;
 }
 
 .subtitle{
     font-size:12px;
-    opacity:0.45;
-    margin-bottom:12px;
+    opacity:0.5;
+    margin-top:4px;
 }
 
 /* ===== 進度條 ===== */
+.progress{
+    margin-top:20px;
+}
+
 input[type=range]{
     width:100%;
     accent-color:#caa76a;
-    margin:10px 0 18px;
 }
 
-/* ===== 控制鍵 ===== */
+/* ===== 控制 ===== */
 .controls{
     display:flex;
     justify-content:center;
     align-items:center;
-    gap:20px;
+    gap:25px;
+    margin-top:20px;
 }
 
 button{
-    border:none;
     background:none;
+    border:none;
     color:#fff;
     font-size:18px;
-    cursor:pointer;
     opacity:0.85;
-    transition:0.2s;
 }
 
-button:hover{
-    opacity:1;
-    transform:scale(1.05);
-}
-
-/* 播放鍵 */
 .play{
-    width:66px;
-    height:66px;
+    width:70px;
+    height:70px;
     border-radius:50%;
-    background: radial-gradient(circle at top,#e0c36a,#b08d2f);
+    background:linear-gradient(#e0c36a,#b08d2f);
     color:#111;
     font-size:22px;
-    box-shadow:0 18px 40px rgba(0,0,0,0.6);
+}
+
+/* ===== 歌詞按鈕 ===== */
+.lyrics-btn{
+    text-align:center;
+    margin-top:15px;
+    opacity:0.7;
+    font-size:13px;
+}
+
+/* ===== 歌詞 Overlay（手機 App） ===== */
+.lyrics-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.6);
+    backdrop-filter: blur(12px);
+    display:none;
+    justify-content:flex-end;
+}
+
+/* 歌詞面板（像 App bottom sheet） */
+.lyrics-panel{
+    height:80vh;
+    background:#111;
+    border-radius:18px 18px 0 0;
+    padding:18px;
+    box-sizing:border-box;
+    overflow-y:auto;
+
+    /* ❌ 隱藏滾動條（重點） */
+    scrollbar-width:none; /* Firefox */
+}
+
+.lyrics-panel::-webkit-scrollbar{
+    display:none; /* Chrome */
+}
+
+.close{
+    text-align:right;
+    opacity:0.6;
+    margin-bottom:10px;
+}
+
+/* 歌詞文字 */
+.lyrics-text{
+    white-space:pre-line;
+    line-height:1.7;
+    font-size:14px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="player" id="player">
+<div class="player">
 
+    <!-- 黑膠 -->
     <div class="vinyl-area">
         <div class="vinyl"></div>
-        <div class="hole"></div>
-        <div class="arm"></div>
     </div>
 
-    <div class="title">Milk Tea</div>
-    <div class="subtitle">特製奶茶 - Ynotpiano</div>
+    <!-- 文字 -->
+    <div class="info">
+        <div class="title">Milk Tea</div>
+        <div class="subtitle">特製奶茶 - Ynotpiano</div>
+    </div>
 
-    <input type="range" id="progress" min="0" max="100" value="0"/>
+    <!-- 進度 -->
+    <div class="progress">
+        <input type="range" id="progress" min="0" max="100" value="0"/>
+    </div>
 
+    <!-- 控制 -->
     <div class="controls">
         <button onclick="back()">⏮</button>
         <button class="play" id="btn" onclick="toggle()">▶</button>
         <button onclick="next()">⏭</button>
     </div>
 
-    <audio id="audio" src="music.mp3" preload="metadata"></audio>
+    <div class="lyrics-btn" onclick="openLyrics()">🎤 查看歌詞</div>
+
+    <audio id="audio" src="music.mp3"></audio>
+</div>
+
+<!-- 歌詞 -->
+<div class="lyrics-overlay" id="overlay" onclick="closeLyrics()">
+    <div class="lyrics-panel" onclick="event.stopPropagation()">
+
+        <div class="close" onclick="closeLyrics()">✕</div>
+
+        <div class="lyrics-text">
+給我一杯特製奶茶
+大杯少冰不要加糖
+水汪汪眼睛捲捲頭髮
+就已經太甜啦
+
+搭車順路送你回家
+你今天想我了嗎
+要不要上來陪我說說話
+
+看著雪白的場地 零度以下的空氣
+妳的身影 最美麗軌跡
+傳聲筒 甜言蜜語
+在另一端卻很清晰
+
+那天與妳相遇 隔著桌椅 很小心翼翼
+一次次得接近 就像奶茶 讓我上了癮
+迎著寒冷空氣 眼前夜景 閃紅燈光影
+妳說是飛機 只要妳很開心 就很有道理
+
+鬧區小鋼珠遊戲 積分一直在累積
+午夜接近 錯過回不去
+玻璃門 抽獎訊息
+是要我留下來陪妳
+
+那天與妳相遇 隔著桌椅 很小心翼翼
+一次次得接近 就像奶茶 讓我上了癮
+湖畔一望無際 水波散去 氣氛很神秘
+水怪的蹤影 只要妳很開心 就很有道理
+
+(telephone)
+給我一杯特製奶茶
+大杯少冰不要加糖
+
+(reset)
+就已經太甜啦
+        </div>
+
+    </div>
 </div>
 
 <script>
-const audio = document.getElementById("audio");
-const player = document.getElementById("player");
-const btn = document.getElementById("btn");
-const progress = document.getElementById("progress");
+const audio=document.getElementById("audio");
+const btn=document.getElementById("btn");
+const progress=document.getElementById("progress");
+const overlay=document.getElementById("overlay");
 
-/* 播放 / 暫停 */
+/* 播放 */
 function toggle(){
     if(audio.paused){
         audio.play();
-        player.classList.add("playing");
         btn.textContent="⏸";
     }else{
         audio.pause();
-        player.classList.remove("playing");
         btn.textContent="▶";
     }
 }
 
-/* 進度更新 */
+/* 進度 */
 audio.addEventListener("timeupdate",()=>{
     if(audio.duration){
-        progress.value = (audio.currentTime/audio.duration)*100;
+        progress.value=(audio.currentTime/audio.duration)*100;
     }
 });
 
-/* 拖曳進度 */
 progress.addEventListener("input",()=>{
-    audio.currentTime = (progress.value/100)*audio.duration;
+    audio.currentTime=(progress.value/100)*audio.duration;
 });
 
-/* 快轉 */
-function back(){
-    audio.currentTime = Math.max(0,audio.currentTime-10);
-}
+/* skip */
+function back(){audio.currentTime=Math.max(0,audio.currentTime-10);}
+function next(){audio.currentTime=Math.min(audio.duration||0,audio.currentTime+10);}
 
-function next(){
-    audio.currentTime = Math.min(audio.duration||0,audio.currentTime+10);
+/* 歌詞 */
+function openLyrics(){
+    overlay.style.display="flex";
+}
+function closeLyrics(){
+    overlay.style.display="none";
 }
 </script>
 
