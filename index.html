@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Music App</title>
+<title>Music Player</title>
 
 <style>
 body{
@@ -16,7 +16,7 @@ body{
     justify-content:center;
 }
 
-/* ===== APP 主體（直式手機感） ===== */
+/* ===== APP ===== */
 .player{
     width:100%;
     max-width:420px;
@@ -28,33 +28,37 @@ body{
     box-sizing:border-box;
 }
 
-/* ===== 黑膠區 ===== */
+/* ===== CD ===== */
 .vinyl-area{
     display:flex;
     justify-content:center;
     align-items:center;
     margin-top:20px;
+    position:relative;
 }
 
+/* CD本體 */
 .vinyl{
-    width:260px;
-    height:260px;
+    width:320px;
+    height:320px;
     border-radius:50%;
+    position:relative;
 
     background:
         radial-gradient(circle at center,
-            rgba(0,0,0,0.2),
-            rgba(0,0,0,0.7)),
+            rgba(0,0,0,0.15),
+            rgba(0,0,0,0.65)),
         url("cover.jpg") center/cover no-repeat;
 
-    box-shadow:0 30px 70px rgba(0,0,0,0.8);
+    box-shadow:0 35px 80px rgba(0,0,0,0.85);
+    overflow:hidden;
 }
 
+/* CD紋理 */
 .vinyl::before{
     content:"";
     position:absolute;
-    width:260px;
-    height:260px;
+    inset:0;
     border-radius:50%;
     background: repeating-radial-gradient(
         circle,
@@ -65,13 +69,26 @@ body{
     opacity:0.25;
 }
 
-/* 中心點 */
-.hole{
+/* ⭐ CD中心洞（修正重點） */
+.vinyl::after{
+    content:"";
     position:absolute;
-    width:20px;
-    height:20px;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    width:26px;
+    height:26px;
     border-radius:50%;
-    background:#111;
+
+    /* 內圈黑 + 金屬感 */
+    background: radial-gradient(circle,
+        #111 0%,
+        #000 70%,
+        #000 100%);
+
+    box-shadow:
+        inset 0 0 6px rgba(255,255,255,0.08),
+        0 0 10px rgba(0,0,0,0.6);
 }
 
 /* ===== 文字 ===== */
@@ -81,24 +98,21 @@ body{
 }
 
 .title{
-    font-size:20px;
+    font-size:22px;
     font-weight:600;
 }
 
 .subtitle{
-    font-size:12px;
-    opacity:0.5;
+    font-size:13px;
+    opacity:0.55;
     margin-top:4px;
 }
 
-/* ===== 進度條 ===== */
-.progress{
-    margin-top:20px;
-}
-
+/* ===== 進度 ===== */
 input[type=range]{
     width:100%;
     accent-color:#caa76a;
+    margin-top:20px;
 }
 
 /* ===== 控制 ===== */
@@ -119,8 +133,8 @@ button{
 }
 
 .play{
-    width:70px;
-    height:70px;
+    width:72px;
+    height:72px;
     border-radius:50%;
     background:linear-gradient(#e0c36a,#b08d2f);
     color:#111;
@@ -131,48 +145,41 @@ button{
 .lyrics-btn{
     text-align:center;
     margin-top:15px;
-    opacity:0.7;
-    font-size:13px;
+    font-size:14px;
+    opacity:0.75;
 }
 
-/* ===== 歌詞 Overlay（手機 App） ===== */
-.lyrics-overlay{
+/* ===== 歌詞（置中彈窗） ===== */
+.overlay{
     position:fixed;
     inset:0;
     background:rgba(0,0,0,0.6);
     backdrop-filter: blur(12px);
     display:none;
-    justify-content:flex-end;
+    justify-content:center;
+    align-items:center;
 }
 
-/* 歌詞面板（像 App bottom sheet） */
-.lyrics-panel{
-    height:80vh;
+.panel{
+    width:85%;
+    max-width:360px;
     background:#111;
-    border-radius:18px 18px 0 0;
-    padding:18px;
-    box-sizing:border-box;
-    overflow-y:auto;
-
-    /* ❌ 隱藏滾動條（重點） */
-    scrollbar-width:none; /* Firefox */
-}
-
-.lyrics-panel::-webkit-scrollbar{
-    display:none; /* Chrome */
+    border-radius:16px;
+    padding:20px;
+    box-shadow:0 20px 60px rgba(0,0,0,0.8);
 }
 
 .close{
     text-align:right;
     opacity:0.6;
     margin-bottom:10px;
+    cursor:pointer;
 }
 
-/* 歌詞文字 */
-.lyrics-text{
+.lyrics{
     white-space:pre-line;
-    line-height:1.7;
-    font-size:14px;
+    line-height:1.8;
+    font-size:16px;
 }
 </style>
 </head>
@@ -181,21 +188,19 @@ button{
 
 <div class="player">
 
-    <!-- 黑膠 -->
+    <!-- CD -->
     <div class="vinyl-area">
         <div class="vinyl"></div>
     </div>
 
     <!-- 文字 -->
     <div class="info">
-        <div class="title">Milk Tea</div>
-        <div class="subtitle">特製奶茶 - Ynotpiano</div>
+        <div class="title">特製奶茶 Milk Tea</div>
+        <div class="subtitle">Ynotpiano</div>
     </div>
 
     <!-- 進度 -->
-    <div class="progress">
-        <input type="range" id="progress" min="0" max="100" value="0"/>
-    </div>
+    <input type="range" id="progress" min="0" max="100" value="0"/>
 
     <!-- 控制 -->
     <div class="controls">
@@ -204,18 +209,19 @@ button{
         <button onclick="next()">⏭</button>
     </div>
 
-    <div class="lyrics-btn" onclick="openLyrics()">🎤 查看歌詞</div>
+    <!-- 歌詞 -->
+    <div class="lyrics-btn" onclick="openLyrics()">歌詞</div>
 
     <audio id="audio" src="music.mp3"></audio>
 </div>
 
-<!-- 歌詞 -->
-<div class="lyrics-overlay" id="overlay" onclick="closeLyrics()">
-    <div class="lyrics-panel" onclick="event.stopPropagation()">
+<!-- 歌詞視窗 -->
+<div class="overlay" id="overlay" onclick="closeLyrics()">
+    <div class="panel" onclick="event.stopPropagation()">
 
         <div class="close" onclick="closeLyrics()">✕</div>
 
-        <div class="lyrics-text">
+        <div class="lyrics">
 給我一杯特製奶茶
 大杯少冰不要加糖
 水汪汪眼睛捲捲頭髮
@@ -289,12 +295,9 @@ function back(){audio.currentTime=Math.max(0,audio.currentTime-10);}
 function next(){audio.currentTime=Math.min(audio.duration||0,audio.currentTime+10);}
 
 /* 歌詞 */
-function openLyrics(){
-    overlay.style.display="flex";
-}
-function closeLyrics(){
-    overlay.style.display="none";
-}
+function openLyrics(){overlay.style.display="flex";
+document.querySelector(".lyrics").scrollTop = 0;}
+function closeLyrics(){overlay.style.display="none";}
 </script>
 
 </body>
