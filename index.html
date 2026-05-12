@@ -1,153 +1,289 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>手機計算機</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <style>
-        *{
-            box-sizing:border-box;
-            margin:0;
-            padding:0;
-            font-family:Arial;
-        }
+<title>Milk Tea</title>
 
-        body{
-            background:#111;
-            min-height:100vh;
-            display:flex;
-            justify-content:center;
-            align-items:center;
-        }
+<style>
 
-        .calculator{
-            width:100%;
-            max-width:420px;
-            padding:15px;
-        }
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial;
+}
 
-        .screen{
-            width:100%;
-            height:90px;
-            border:none;
-            border-radius:20px;
-            margin-bottom:15px;
-            text-align:right;
-            font-size:2rem;
-            padding:20px;
-            background:#222;
-            color:white;
-        }
+body{
+    background:linear-gradient(180deg,#111,#000);
+    color:white;
+    min-height:100vh;
 
-        .buttons{
-            display:grid;
-            grid-template-columns:repeat(4,1fr);
-            gap:12px;
-        }
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
 
-        button{
-            border:none;
-            border-radius:20px;
-            height:75px;
-            font-size:1.6rem;
-            cursor:pointer;
-            touch-action:manipulation;
-        }
+.player{
+    width:100%;
+    max-width:420px;
+    padding:25px;
+}
 
-        button:active{
-            transform:scale(0.96);
-        }
+.cover{
+    width:100%;
+    aspect-ratio:1;
 
-        .operator{
-            background:#ff9500;
-            color:white;
-        }
+    border-radius:30px;
 
-        .number{
-            background:#333;
-            color:white;
-        }
+    background:
+    url("cover.jpg") center/cover;
 
-        .clear{
-            background:#666;
-            color:white;
-        }
+    box-shadow:0 20px 50px rgba(0,0,0,.6);
 
-        .equal{
-            background:#00b894;
-            color:white;
-        }
+    animation:spin 10s linear infinite;
 
-        @media (max-width:500px){
-            .screen{
-                height:80px;
-                font-size:1.7rem;
-            }
+    animation-play-state:paused;
+}
 
-            button{
-                height:70px;
-                font-size:1.4rem;
-            }
-        }
-    </style>
+.cover.playing{
+    animation-play-state:running;
+}
+
+@keyframes spin{
+    from{transform:rotate(0deg);}
+    to{transform:rotate(360deg);}
+}
+
+.info{
+    text-align:center;
+    margin-top:30px;
+}
+
+.title{
+    font-size:2rem;
+    font-weight:bold;
+}
+
+.artist{
+    margin-top:8px;
+    opacity:.7;
+}
+
+.progress{
+    width:100%;
+    margin-top:25px;
+}
+
+.progress input{
+    width:100%;
+}
+
+.time{
+    display:flex;
+    justify-content:space-between;
+    opacity:.6;
+    margin-top:8px;
+    font-size:.9rem;
+}
+
+.controls{
+    margin-top:35px;
+
+    display:flex;
+    justify-content:center;
+}
+
+.playBtn{
+
+    width:90px;
+    height:90px;
+
+    border:none;
+    border-radius:50%;
+
+    font-size:2rem;
+
+    background:white;
+    cursor:pointer;
+}
+
+.links{
+
+    margin-top:35px;
+    text-align:center;
+}
+
+.links a{
+    color:#aaa;
+    text-decoration:none;
+    margin:0 10px;
+}
+
+</style>
 </head>
 <body>
 
-    <div class="calculator">
-        <input class="screen" id="screen" readonly>
 
-        <div class="buttons">
+<div class="player">
 
-            <button class="clear" onclick="clearScreen()">C</button>
-            <button class="operator" onclick="add('/')">÷</button>
-            <button class="operator" onclick="add('*')">×</button>
-            <button class="operator" onclick="backspace()">⌫</button>
+    <div class="cover" id="cover"></div>
 
-            <button class="number" onclick="add('7')">7</button>
-            <button class="number" onclick="add('8')">8</button>
-            <button class="number" onclick="add('9')">9</button>
-            <button class="operator" onclick="add('-')">−</button>
+    <div class="info">
 
-            <button class="number" onclick="add('4')">4</button>
-            <button class="number" onclick="add('5')">5</button>
-            <button class="number" onclick="add('6')">6</button>
-            <button class="operator" onclick="add('+')">+</button>
-
-            <button class="number" onclick="add('1')">1</button>
-            <button class="number" onclick="add('2')">2</button>
-            <button class="number" onclick="add('3')">3</button>
-            <button class="equal" onclick="calculate()" rowspan="2">=</button>
-
-            <button class="number" onclick="add('0')">0</button>
-            <button class="number" onclick="add('.')">.</button>
-
+        <div class="title">
+            Milk Tea
         </div>
+
+        <div class="artist">
+            Ynotpiano
+        </div>
+
     </div>
 
-    <script>
-        const screen = document.getElementById("screen")
 
-        function add(value){
-            screen.value += value
-        }
+    <div class="progress">
 
-        function clearScreen(){
-            screen.value = ""
-        }
+        <input
+        type="range"
+        value="0"
+        id="slider">
 
-        function backspace(){
-            screen.value = screen.value.slice(0,-1)
-        }
+        <div class="time">
 
-        function calculate(){
-            try{
-                screen.value = eval(screen.value)
-            }catch{
-                screen.value = "Error"
-            }
-        }
-    </script>
+            <span id="current">
+                0:00
+            </span>
+
+            <span id="duration">
+                0:00
+            </span>
+
+        </div>
+
+    </div>
+
+
+
+    <div class="controls">
+
+        <button
+        class="playBtn"
+        onclick="togglePlay()"
+        id="playBtn">
+
+            ▶
+
+        </button>
+
+    </div>
+
+
+
+    <div class="links">
+
+        <a href="#">
+            Instagram
+        </a>
+
+        <a href="#">
+            YouTube
+        </a>
+
+    </div>
+
+
+</div>
+
+
+
+<audio
+id="audio"
+src="music.mp3">
+</audio>
+
+
+
+<script>
+
+const audio=document.getElementById("audio")
+const slider=document.getElementById("slider")
+const playBtn=document.getElementById("playBtn")
+const cover=document.getElementById("cover")
+
+const current=document.getElementById("current")
+const duration=document.getElementById("duration")
+
+let playing=false
+
+
+function togglePlay(){
+
+    if(playing){
+
+        audio.pause()
+
+        playBtn.innerHTML="▶"
+
+        cover.classList.remove("playing")
+
+    }else{
+
+        audio.play()
+
+        playBtn.innerHTML="❚❚"
+
+        cover.classList.add("playing")
+    }
+
+    playing=!playing
+}
+
+
+audio.addEventListener("loadedmetadata",()=>{
+
+    slider.max=audio.duration
+
+    duration.innerHTML=formatTime(
+        audio.duration
+    )
+
+})
+
+
+audio.addEventListener("timeupdate",()=>{
+
+    slider.value=audio.currentTime
+
+    current.innerHTML=formatTime(
+        audio.currentTime
+    )
+
+})
+
+
+slider.addEventListener("input",()=>{
+
+    audio.currentTime=slider.value
+
+})
+
+
+function formatTime(sec){
+
+    let m=Math.floor(sec/60)
+
+    let s=Math.floor(sec%60)
+
+    if(s<10)s="0"+s
+
+    return m+":"+s
+
+}
+
+</script>
+
 
 </body>
 </html>
